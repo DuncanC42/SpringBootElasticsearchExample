@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.4
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.4
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+
+  data-loader:
+    image: curlimages/curl:latest
+    container_name: data-loader
+    depends_on:
+      - elasticsearch
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "Waiting for Elasticsearch to be ready...";
+        until curl -s http://elasticsearch:9200 >/dev/null; do sleep 2; done;
+        echo "Elasticsearch is up, indexing data...";
+        curl -X PUT http://elasticsearch:9200/products -H "Content-Type: application/json" -d '
+        {
+          "mappings": {
+            "properties": {
+              "id": { "type": "long" },
+              "name": { "type": "text" },
+              "description": { "type": "text" },
+              "quantity": { "type": "integer" },
+              "price": { "type": "double" }
+            }
+          }
+        }';
+        curl -X POST http://elasticsearch:9200/products/_bulk -H "Content-Type: application/json" --data-binary "@/data/products.json";
+        echo "Data indexed!";
+    volumes:
+      - ./data:/data
+
+volumes:
+  es_data:

@@ -1,0 +1,10 @@
+{ "index": {} }
+{ "id": 1, "name": "Laptop Pro X", "description": "High-performance laptop with a sleek design and powerful features.", "quantity": 50, "price": 1299.99 }
+{ "index": {} }
+{ "id": 2, "name": "Wireless Mouse", "description": "Ergonomic and responsive wireless mouse with adjustable DPI.", "quantity": 150, "price": 25.49 }
+{ "index": {} }
+{ "id": 3, "name": "Noise Cancelling Headphones", "description": "Experience immersive sound with active noise cancellation.", "quantity": 30, "price": 199.99 }
+{ "index": {} }
+{ "id": 4, "name": "Gaming Keyboard", "description": "Mechanical keyboard with RGB lighting and programmable keys.", "quantity": 70, "price": 89.99 }
+{ "index": {} }
+{ "id": 5, "name": "4K Monitor", "description": "Ultra HD monitor with vivid colors and high refresh rate.", "quantity": 20, "price": 349.99 }
