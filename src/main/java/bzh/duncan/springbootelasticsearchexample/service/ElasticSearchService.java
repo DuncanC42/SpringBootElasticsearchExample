@@ -8,7 +8,6 @@ import co.elastic.clients.elasticsearch.core.SearchResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.naming.directory.SearchResult;
 import java.io.IOException;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -39,6 +38,13 @@ public class ElasticSearchService {
         Supplier<Query> querySupplier = ElasticSearchUtil.supplierWithNameField(nameValue);
         SearchResponse<Product> searchResponse = client.search(sup -> sup.query(querySupplier.get()), Product.class);
         System.out.println("Elasticsearch query is " + querySupplier.get().toString());
+        return searchResponse;
+    }
+
+    public SearchResponse<Product> fuzzySearchOnNameField(String approximateProductName) throws IOException {
+        Supplier<Query> querySupplier = ElasticSearchUtil.fuzzySupplier(approximateProductName);
+        SearchResponse<Product> searchResponse = client.search(sup -> sup.index("products").query(querySupplier.get()), Product.class);
+        System.out.println("Elasticsearch fuzzy query is " + querySupplier.get().toString());
         return searchResponse;
     }
 

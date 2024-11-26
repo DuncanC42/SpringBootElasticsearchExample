@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/products")
@@ -75,6 +74,18 @@ public class ProductController {
     @GetMapping("/matchWithNameField/{name}")
     public ResponseEntity<List<Product>> matchWithNameField(@PathVariable String name) throws IOException {
         SearchResponse<Product> searchResponse = elasticSearchService.matchWithNameField(name);
+        List<Hit<Product>> listOfHits = searchResponse.hits().hits();
+
+        List<Product> listOfProducts = new ArrayList<>();
+        for (Hit<Product> hit : listOfHits) {
+            listOfProducts.add(hit.source());
+        }
+        return ResponseEntity.ok(listOfProducts);
+    }
+
+    @GetMapping("/fuzzySearchOnName/{name}")
+    public ResponseEntity<List<Product>> fuzzySearchOnNameField(@PathVariable String name) throws IOException {
+        SearchResponse<Product> searchResponse = elasticSearchService.fuzzySearchOnNameField(name);
         List<Hit<Product>> listOfHits = searchResponse.hits().hits();
 
         List<Product> listOfProducts = new ArrayList<>();
